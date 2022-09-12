@@ -13,10 +13,15 @@ int main(int argc, char *argv[])
     int time;
     time = atoi(argv[1]);
 
-    //
+#ifdef DEBUG
     fprintf(1, "sleep");
+#endif
+
     sleep(time);
+
+#ifdef DEBUG
     fprintf(1, "sleep end");
+#endif
 
     exit(0);
 }
