@@ -51,7 +51,9 @@ void find(char *path, char *patern)
     case /* constant-expression */ T_FILE:
         /* code */
 
-        printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
+        memcpy(buf, path, strlen(path));
+
+        printf("%s %d %d %l\n", fmtname(buf), st.type, st.ino, st.size);
         break;
 
     case T_DIR:
@@ -67,10 +69,10 @@ void find(char *path, char *patern)
 
         while (read(fd, &de, sizeof(de)) == sizeof(de))
         {
-            if (de.inum == 0)
+            if (de.inum == 0 || strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0)
                 continue;
 
-            dprintf("DEBUG: de.name: %s \n", de.name);
+            // dprintf("DEBUG: de.name: %s \n", de.name);
 
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;
@@ -81,7 +83,8 @@ void find(char *path, char *patern)
                 continue;
             }
 
-            printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+            // printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+            find(fmtname(buf), patern);
         }
 
         break;
