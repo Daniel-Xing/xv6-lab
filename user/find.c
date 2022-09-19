@@ -17,8 +17,10 @@ fmtname(char *path)
     // Return blank-padded name.
     if (strlen(p) >= DIRSIZ)
         return p;
+
     memmove(buf, p, strlen(p));
     memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
+
     return buf;
 }
 
@@ -68,7 +70,7 @@ void find(char *path, char *patern)
             if (de.inum == 0)
                 continue;
 
-            printf("de.name: %s \n", de.name);
+            dprintf("DEBUG: de.name: %s \n", de.name);
 
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;

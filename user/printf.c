@@ -4,6 +4,8 @@
 
 #include <stdarg.h>
 
+#define DEBUG
+
 static char digits[] = "0123456789ABCDEF";
 
 static void putc(int fd, char c)
@@ -133,4 +135,14 @@ void printf(const char *fmt, ...)
 
   va_start(ap, fmt);
   vprintf(1, fmt, ap);
+}
+
+void dprintf(const char *fmt, ...)
+{
+#ifdef DEBUG
+  va_list ap;
+
+  va_start(ap, fmt);
+  vprintf(1, fmt, ap);
+#endif
 }
