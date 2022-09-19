@@ -67,22 +67,19 @@ void find(char *path, char *patern)
         {
             if (de.inum == 0)
                 continue;
+
+            printf("de.name: %s \n", de.name);
+
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;
+
             if (stat(buf, &st) < 0)
             {
                 printf("ls: cannot stat %s\n", buf);
                 continue;
             }
+
             printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
-
-            // // compare
-            // if (strcmp(de.name, patern) == 0)
-            // {
-            //     printf("same \n");
-            // }
-
-            // find(fmtname(buf), patern);
         }
 
         break;

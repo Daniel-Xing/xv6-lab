@@ -1,0 +1,8 @@
+version: '3.3'
+
+services:
+  xv6:
+    container_name: xv6
+    image: xv6:latest
+    volumes: 
+      - "/Users/xingzheng/xv6-lab:/root/xv6:rw"
