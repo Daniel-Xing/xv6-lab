@@ -3,28 +3,42 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
-char *
-fmtname(char *path)
+int str_tail(char *path, char *pattern)
 {
-    static char buf[DIRSIZ + 1];
-    char *p;
+    char *l, *r;
+
+    l = path + strlen(path);
+    r = pattern + strlen(pattern);
+
+    for (; l >= path && *l != '/';)
+    {
+        if (*l != *r)
+            return -1;
+        l--;
+        r--;
+    }
+
+    if (r != pattern)
+        return -1;
+
+    return 0;
 
     // Find first character after last slash.
-    for (p = path + strlen(path); p >= path && *p != '/'; p--)
-        ;
-    p++;
+    // for (p = path + strlen(path); p >= path && *p != '/'; p--)
+    //     ;
+    // p++;
 
-    // Return blank-padded name.
-    if (strlen(p) >= DIRSIZ)
-        return p;
+    // // Return blank-padded name.
+    // if (strlen(p) >= DIRSIZ)
+    //     return p;
 
-    memmove(buf, p, strlen(p));
-    memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
+    // memmove(buf, p, strlen(p));
+    // memset(buf + strlen(p), ' ', DIRSIZ - strlen(p));
 
-    return buf;
+    // return buf;
 }
 
-void find(char *path, char *patern)
+void find(char *path, char *patern, int isExist)
 {
     char buf[512], *p;
     int fd;
@@ -46,16 +60,10 @@ void find(char *path, char *patern)
     }
 
     //
+    strcpy(buf, path);
+
     switch (st.type)
     {
-    case /* constant-expression */ T_FILE:
-        /* code */
-
-        memcpy(buf, path, strlen(path));
-
-        printf("%s %d %d %l\n", fmtname(buf), st.type, st.ino, st.size);
-        break;
-
     case T_DIR:
         if (strlen(path) + 1 + DIRSIZ + 1 > sizeof buf)
         {
@@ -63,7 +71,6 @@ void find(char *path, char *patern)
             break;
         }
 
-        strcpy(buf, path);
         p = buf + strlen(buf);
         *p++ = '/';
 
@@ -72,10 +79,12 @@ void find(char *path, char *patern)
             if (de.inum == 0 || strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0)
                 continue;
 
-            // dprintf("DEBUG: de.name: %s \n", de.name);
+            dprintf("DEBUG: de.name: %s \n", de.name);
 
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;
+
+            isExist = strcmp(de.name, patern);
 
             if (stat(buf, &st) < 0)
             {
@@ -83,13 +92,16 @@ void find(char *path, char *patern)
                 continue;
             }
 
-            // printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
-            find(fmtname(buf), patern);
+            find(buf, patern, isExist);
         }
 
         break;
 
     default:
+        if (isExist != 0)
+            break;
+
+        printf("%s\n", buf);
         break;
     }
 
@@ -103,7 +115,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    find(argv[1], argv[2]);
+    find(argv[1], argv[2], -1);
 
     exit(0);
 }
