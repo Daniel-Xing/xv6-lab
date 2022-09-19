@@ -3,6 +3,7 @@
         "types.h": "c",
         "user.h": "c",
         "sleeplock.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "fs.h": "c"
     }
 }

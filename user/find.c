@@ -79,7 +79,7 @@ void find(char *path, char *patern, int isExist)
             if (de.inum == 0 || strcmp(de.name, ".") == 0 || strcmp(de.name, "..") == 0)
                 continue;
 
-            dprintf("DEBUG: de.name: %s \n", de.name);
+            // dprintf("DEBUG: de.name: %s \n", de.name);
 
             memmove(p, de.name, DIRSIZ);
             p[DIRSIZ] = 0;

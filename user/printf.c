@@ -4,8 +4,6 @@
 
 #include <stdarg.h>
 
-#define DEBUG
-
 static char digits[] = "0123456789ABCDEF";
 
 static void putc(int fd, char c)
